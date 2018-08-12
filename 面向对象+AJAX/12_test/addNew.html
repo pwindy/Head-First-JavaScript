@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>chapter10---增加新数据</title>
+
+	<style>
+		span{
+			font-size:12px;
+			color:red;
+			margin:0;
+		}
+	</style>
+</head>
+
+<body">
+	<h3>添加博客信息至博客主页</h3>
+	日期: <input type="text" id="date" name="date" value="" size="10" /><br />
+	主要内容: <input type="text" id="body" name="body" value="" size="60" /><br />
+	图片 (可选项): <input type="text" id="image" name="image" value="" size="20" />
+	<span>参考图片：'cube.png','cube777.png','cubeapart.png'</span><br />
+	<input type="button" id="add" value="Add the New Blog Entry" disabled='disabled'/><br />
+	<div id="status"></div>
+</body>
+<script type='text/javascript' src='js/12_date.js'></script>
+<script type='text/javascript' src='js/12_ajax.js'></script>
+<script type='text/javascript'>
+	var a_date = document.getElementById('date');
+	var a_body = document.getElementById('body');
+	var a_image = document.getElementById('image');
+	var a_btn = document.getElementById('add');
+
+	var ajaxRequest = new AjaxRequest();
+	var img_con = '';
+	if(a_image.value){
+		var img_con = a_image.value; 
+	}
+	
+	window.onload = function() {
+		a_date.value = ( new Date() ).dateFormat();
+		a_body.focus();	
+	}
+
+	//解禁提交按钮
+	function btn_yes() {
+		if( a_body.value!=''&&(a_body.value!=''||a_image.value!='') ){
+			a_btn.removeAttribute('disabled');
+		}
+	}
+	a_body.onblur = function() {
+		btn_yes();
+	}
+	a_image.onblur = function() {
+		btn_yes();
+	}
+	a_btn.onclick = function() {
+		document.getElementById("status").innerHTML = "数据添加中...";
+		var sendData = 'date='+a_date.value+'&body='+a_body.value+'&image='+a_image.value;
+		console.log( sendData );
+		ajaxRequest.getData('POST','ajax/addblogentry.php',true,hanleFunction,sendData);
+	}
+
+
+	function hanleFunction() {
+		if( ajaxRequest.readyState()==4&&ajaxRequest.status()==200 ){
+			alert('新增数据已经提交成功');
+          	document.getElementById("status").innerHTML = "";			
+		}
+	}
+</script>
+</html>
